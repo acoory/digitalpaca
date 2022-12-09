@@ -4,11 +4,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
+  final uri = "http://138.68.104.234:8080/";
   Auth(email, password) async {
-    var response = await http.post(
-        Uri.parse("http://138.68.104.234:8080/auth/login"),
+    var response = await http.post(Uri.parse("${uri}auth/login"),
         body: {"email": email, "password": password});
 
+    // body: {
+    //   "email": "test-tech-dp-api_front@gmail.com",
+    //   "password": "#j3apZAYBAm@Q4T2C!dQa"
+    // });
     if (response.statusCode == 200) {
       late SharedPreferences preferences;
       preferences = await SharedPreferences.getInstance();
@@ -31,8 +35,7 @@ class AuthService {
     preferences = await SharedPreferences.getInstance();
     String? RefreshToken = preferences.getString('refreshToken');
 
-    var response = await http
-        .post(Uri.parse("http://138.68.104.234:8080/auth/refresh"), body: {
+    var response = await http.post(Uri.parse(uri + "auth/refresh"), body: {
       "refreshToken": RefreshToken.toString(),
     });
 
