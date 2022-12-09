@@ -1,10 +1,8 @@
 // ignore_for_file: unnecessary_null_comparison
 
-import 'dart:convert';
-
 import 'package:digitalpaca/screen/home_view.dart';
+import 'package:digitalpaca/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginView extends StatefulWidget {
@@ -15,48 +13,20 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  // @override
-  // initState() {
-  //   super.initState();
-
-  //   checkAuth();
-  // }
-
   @override
   Widget build(BuildContext context) {
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
 
-    // create function HandleSignIn to handle login use api
-    void login() async {
+    AuthCheck() async {
       String email = emailController.text;
       String password = passwordController.text;
-
-      var response = await http.post(
-          Uri.parse("http://138.68.104.234:8080/auth/login"),
-          // body: {"email": email, "password": password});
-          body: {
-            "email": "test-tech-dp-api_front@gmail.com",
-            "password": "#j3apZAYBAm@Q4T2C!dQa"
-          });
-      if (response.statusCode == 200) {
-        late SharedPreferences preferences;
-        preferences = await SharedPreferences.getInstance();
-        Map<String, dynamic> userMap =
-            jsonDecode(response.body!) as Map<String, dynamic>;
-        print(userMap['token']);
-
-        // save data user and token and refreshToken in shared preferences
-        preferences.setString("user", response.body);
-        preferences.setString("token", userMap['token']);
-        preferences.setString("refreshToken", userMap['refreshToken']);
-        preferences.setBool("isAuth", true);
-
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const HomeView()));
-      } else {
-        print("Login fail");
-      }
+      AuthService().Auth(email, password).then((value) {
+        if (value == true) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const HomeView()));
+        }
+      });
     }
 
     return WillPopScope(
@@ -73,7 +43,7 @@ class _LoginViewState extends State<LoginView> {
                   children: [
                     const CircleAvatar(
                       backgroundColor: Colors.white,
-                      radius: 70,
+                      radius: 80,
                       child: Center(
                         child: Image(
                           image: AssetImage("assets/logo.png"),
@@ -82,28 +52,31 @@ class _LoginViewState extends State<LoginView> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     const Text(
                       "Se connecter :",
                       style: TextStyle(
+                          fontFamily: "Roboto",
                           color: Colors.white,
                           fontSize: 30,
-                          fontWeight: FontWeight.bold),
+                          fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(
-                      height: 20,
+                      height: 25,
                     ),
                     Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: TextField(
                           controller: emailController,
-                          // onChanged: (value) {
-                          //   email = value;
-                          // },
+                          style: const TextStyle(
+                              fontSize: 17,
+                              fontStyle: FontStyle.italic,
+                              fontFamily: "Roboto"),
                           textAlign: TextAlign.center,
                           decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.all(17),
                             fillColor: Colors.white,
                             filled: true,
                             border: UnderlineInputBorder(
@@ -122,7 +95,12 @@ class _LoginViewState extends State<LoginView> {
                           controller: passwordController,
                           textAlign: TextAlign.center,
                           obscureText: true,
+                          style: const TextStyle(
+                              fontSize: 17,
+                              fontStyle: FontStyle.italic,
+                              fontFamily: "Roboto"),
                           decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.all(17),
                             fillColor: Colors.white,
                             filled: true,
                             border: UnderlineInputBorder(
@@ -132,7 +110,7 @@ class _LoginViewState extends State<LoginView> {
                             hintText: "Mot de passe",
                           ),
                         )),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Container(
@@ -140,11 +118,7 @@ class _LoginViewState extends State<LoginView> {
                       padding: const EdgeInsets.symmetric(horizontal: 40),
                       child: ElevatedButton(
                         onPressed: () async {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => HomeView()));
-                          login();
+                          AuthCheck();
                         },
                         child: const Text("Se connecter"),
                       ),
@@ -153,18 +127,5 @@ class _LoginViewState extends State<LoginView> {
                 ),
               )),
         ));
-  }
-
-  void checkAuth() async {
-    // ignore: use_build_context_synchronously
-    late SharedPreferences preferences;
-    preferences = await SharedPreferences.getInstance();
-    bool isAuth = preferences.getBool("isAuth") ?? false;
-    if (isAuth) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const HomeView()));
-    } else {
-      print("Not Auth");
-    }
   }
 }

@@ -1,8 +1,6 @@
 import 'package:digitalpaca/navigation/New_drawer.dart';
 import 'package:digitalpaca/provider/favories_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class FavorisView extends StatelessWidget {
   const FavorisView({super.key});
@@ -13,7 +11,7 @@ class FavorisView extends StatelessWidget {
     final words = provider.words;
     return Scaffold(
       drawer: NewDrawer(),
-      appBar: AppBar(title: Text("Favories")),
+      appBar: AppBar(title: const Text("Favories")),
       body: ListView.builder(
         itemCount: words.length,
         itemBuilder: (context, index) {

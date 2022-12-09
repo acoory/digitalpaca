@@ -21,8 +21,8 @@ class _NewDrawerState extends State<NewDrawer> {
   @override
   Widget build(BuildContext context) {
     var ListDrawer = [
-      {'title': "Home", "icon": Icons.add_home_outlined},
-      {'title': "Favoris", "icon": Icons.star},
+      {'title': "Home", "icon": Icons.home},
+      {'title': "Favoris", "icon": Icons.star_outline},
       {'title': "Deconnexion", "icon": Icons.logout}
     ];
 
@@ -31,12 +31,11 @@ class _NewDrawerState extends State<NewDrawer> {
       preferences = await SharedPreferences.getInstance();
       preferences.remove("user");
       preferences.remove("isAuth");
-      Navigator.pop(context);
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => LoginView()));
-      // ignore: use_build_context_synchronously
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => const LoginView()));
+      preferences.remove("token");
+      preferences.remove("refreshToken");
+      _currentIndex = 0;
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const LoginView()));
     }
 
     void navigateTo(int index) {
@@ -74,6 +73,7 @@ class _NewDrawerState extends State<NewDrawer> {
                               : Color.fromRGBO(0, 167, 245, 1),
                           leading: Icon(
                             e['icon'] as IconData,
+                            size: 30,
                           ),
                           title: Text(
                             e['title'] as String,

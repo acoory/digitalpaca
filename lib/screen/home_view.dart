@@ -1,11 +1,8 @@
-import 'dart:convert';
-
 import 'package:digitalpaca/model/series.dart';
 import 'package:digitalpaca/navigation/New_drawer.dart';
 import 'package:digitalpaca/provider/favories_provider.dart';
 import 'package:digitalpaca/screen/description_view.dart';
-import 'package:digitalpaca/screen/login_view.dart';
-import 'package:digitalpaca/services/remote_service.dart';
+import 'package:digitalpaca/services/series_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,17 +26,14 @@ class _HomeViewState extends State<HomeView> {
     super.initState();
 
     getData();
-    // logout();
   }
 
   getData() async {
     late SharedPreferences preferences;
     preferences = await SharedPreferences.getInstance();
-    String? userPref = preferences.getString('user');
+    String? token = preferences.getString('token');
 
-    Map<String, dynamic> userMap =
-        jsonDecode(userPref!) as Map<String, dynamic>;
-    series = await RemoteService().getSeries(userMap['token']);
+    series = await SeriesService().getSeries(token);
     initSeries = series;
 
     if (series != null) {
@@ -60,7 +54,6 @@ class _HomeViewState extends State<HomeView> {
     setState(() {
       series = suggestion;
     });
-    // return suggestion;
   }
 
   @override
@@ -79,12 +72,19 @@ class _HomeViewState extends State<HomeView> {
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Column(
               children: [
+                const SizedBox(
+                  height: 10,
+                ),
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(078),
-                      border: Border.all(
-                          color: Color.fromARGB(255, 227, 227, 227))),
+                      border:
+                          Border.all(color: Color.fromRGBO(189, 189, 189, 1))),
                   child: TextField(
+                    style: const TextStyle(
+                        fontSize: 17,
+                        fontStyle: FontStyle.italic,
+                        fontFamily: "Roboto"),
                     decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Recherche',
@@ -103,7 +103,7 @@ class _HomeViewState extends State<HomeView> {
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 35,
                 ),
                 Expanded(
                     child: Visibility(
@@ -129,7 +129,8 @@ class _HomeViewState extends State<HomeView> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                  color: Color.fromARGB(255, 221, 221, 221)),
+                                  color:
+                                      const Color.fromARGB(255, 221, 221, 221)),
                               boxShadow: [
                                 BoxShadow(
                                   color:
@@ -137,7 +138,7 @@ class _HomeViewState extends State<HomeView> {
                                           .withOpacity(0.5),
                                   spreadRadius: 2,
                                   blurRadius: 3,
-                                  offset: const Offset(0, 3),
+                                  offset: const Offset(0, 1),
                                 ),
                               ],
                             ),
@@ -160,11 +161,11 @@ class _HomeViewState extends State<HomeView> {
                                                 series![index].thumbUrl,
                                                 fit: BoxFit.cover,
                                               )
-                                            : Text("data"))),
+                                            : const Text("data"))),
                                 Expanded(
                                   child: Container(
                                       padding: const EdgeInsets.only(left: 10),
-                                      height: 170,
+                                      height: 150,
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,
@@ -237,7 +238,7 @@ class _HomeViewState extends State<HomeView> {
                                                       189, 189, 189, 1)),
                                         ),
                                       ],
-                                    ))
+                                    )),
                               ],
                             ),
                           ),

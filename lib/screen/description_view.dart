@@ -207,7 +207,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                               ],
                             ),
                             const SizedBox(
-                              height: 30,
+                              height: 50,
                             ),
                             SizedBox(
                               width: MediaQuery.of(context).size.width,
@@ -216,11 +216,12 @@ class _DescriptionViewState extends State<DescriptionView> {
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
+                                    fontFamily: "Roboto",
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
                             const SizedBox(
-                              height: 40,
+                              height: 20,
                             ),
                             SizedBox(
                               width: MediaQuery.of(context).size.width,

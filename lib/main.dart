@@ -4,11 +4,13 @@ import 'package:digitalpaca/screen/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive/hive.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   final isAuth = prefs.getBool('isAuth') ?? false;
+
   runApp(MyApp(isAuth: isAuth));
 }
 
